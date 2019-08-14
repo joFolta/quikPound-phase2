@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>QuikPound</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="page-header text-center">
+      <h1><span class="fa fa-anchor"></span> Profile Page</h1>
+      <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+    </div>
+
+    <div class="row">
+
+      <!-- LOCAL INFORMATION -->
+      <div class="col-sm-6">
+        <div class="well">
+          <h3><span class="fa fa-user"></span> <%= user.local.username %></h3>
+        </div>
+      </div>
+      <!-- needs ENCTYPE to identify img -->
+      <!-- use multipart/form-data when your form includes any <input type="file"> elements -->
+      <div class="col-sm-6">
+        <h2>Add a message</h2>
+        <% if (user.local.email) { %>
+        <form action="/posts" enctype="multipart/form-data" method="POST">
+          <input type="text" value="Text For Posts" name="postText">
+          <input type="file" name="file-to-upload" value="">
+          <input type="submit" name="" value="Upload">
+
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+      <% } %>
+
+
+      </form>
+
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <ul>
+          <% for(var i=0; i<posts.length; i++) {%>
+          <li class="message">
+            <a href="/posts/<%= posts[i]._id %>">
+              <img src="<%= posts[i].postImg %>" alt="posted image">
+              <span><%= posts[i]._id %></span>
+              <span><%= posts[i].username %></span>
+              <span><%= posts[i].postText %></span>
+            </a>
+          </li>
+          <% } %>
+        </ul>
+
+      </div>
+    </div>
+    <script src="main.js"></script>
+
+</body>
+
+</html>
