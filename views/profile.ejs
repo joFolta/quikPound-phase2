@@ -5,7 +5,7 @@
   <title>QuikPound</title>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
@@ -49,7 +49,7 @@
           <% for(var i=0; i<posts.length; i++) {%>
           <li class="message">
             <a href="/posts/<%= posts[i]._id %>">
-              <img src="<%= posts[i].postImg %>" alt="posted image">
+              <img class="profileThumb" src="/<%= posts[i].postImg %>" alt="posted image">
               <span><%= posts[i]._id %></span>
               <span><%= posts[i].username %></span>
               <span><%= posts[i].postText %></span>
@@ -57,10 +57,10 @@
           </li>
           <% } %>
         </ul>
-
       </div>
     </div>
-    <script src="main.js"></script>
+
+    <script src="/main.js"></script>
 
 </body>
 

@@ -13,26 +13,43 @@ module.exports = function(app, passport, db, multer, ObjectId) {
     //1.) GET USERNAME
     var uId = ObjectId(req.session.passport.user)
     console.log("req.session.passport",req.session.passport)
-    // console.log("uId",uId)
     var uName
     db.collection('users').find({_id: uId}).toArray((err, result) => {
-      // console.log("result", result);
-      // console.log("result[0].local.username", result[0].local.username);
       if (err) return console.log(err)
       uName = result[0].local.username;
-                                            //2.) GET POSTS OF USER
-                                            //nested to make sure 1st db.collection runs FIRST
-                                            db.collection('posts').find({
-                                              username: uName
-                                            }).toArray((err, result) => {
-                                              if (err) return console.log(err)
-                                              res.render('profile.ejs', {
-                                                user: req.user,
-                                                posts: result
-                                              })
-                                            })
+            //2.) GET POSTS OF USER
+            //nested to make sure 1st db.collection runs FIRST
+            db.collection('posts').find({
+              username: uName
+            }).toArray((err, result) => {
+              if (err) return console.log(err)
+              res.render('profile.ejs', {
+                user: req.user,
+                posts: result
+              })
+            })
     })
   })
+
+  // USER-PAGE SECTION =========================
+  // OTHER USERS CAN SEE YOUR PAGE
+  app.get('/u/:user_name', isLoggedIn, function(req, res) {
+    //1.) GET USERNAME
+    console.log("req.params.user_name",req.params.user_name);
+    var uName = req.params.user_name
+          //2.) GET POSTS OF USER
+          //nested to make sure 1st db.collection runs FIRST
+          db.collection('posts').find({
+            username: uName
+          }).toArray((err, result) => {
+            if (err) return console.log(err)
+            res.render('userPage.ejs', {
+              user: uName,
+              posts: result
+            })
+  })
+})
+
 
   // LOGOUT ==============================
   app.get('/logout', function(req, res) {
@@ -45,14 +62,26 @@ module.exports = function(app, passport, db, multer, ObjectId) {
 
   // GETS individual posts pages (all rendered with posts.ejs)===========================
   app.get('/posts/:post_id', function(req, res) {
-    // console.log("req",req)
-    // console.log("req.params.post_id",req.params.post_id);
     console.log("req.params",req.params);
-    //req.params is the request's query paramater
     var postId = ObjectId(req.params.post_id)
+    console.log("testobjectId", postId);
+
     db.collection('posts').find({_id: postId}).toArray((err, result) => {
       if (err) return console.log(err)
       res.render('posts.ejs', {
+        posts: result
+      })
+    })
+  })
+
+
+//Feed Route
+
+  app.get('/feed', isLoggedIn, function(req, res) {
+    var postId = ObjectId(req.params.post_id)
+    db.collection('posts').find().toArray((err, result) => {
+      if (err) return console.log(err)
+      res.render('feed.ejs', {
         posts: result
       })
     })
@@ -72,41 +101,12 @@ var storage = multer.diskStorage({
     //CREATE FILE NAME
     filename: (req, file, cb) => {
       cb(null, file.fieldname + '-' + Date.now() + ".png")
+      // Date.now() long sting of current time in millisecs
+      // (REASON: to randomize img name)
     }
 });
 var upload = multer({storage: storage});
 
-// app.post('/up', upload.single('file-to-upload'), (req, res, next) => {
-//     //FILE PATH STORED
-//     insertDocuments(db, req, 'images/uploads/' + req.file.filename, () => {
-//         //db.close();
-//         //res.json({'message': 'File uploaded successfully'});
-//         res.redirect('/profile')
-//     });
-// });
-
-// var insertDocuments = function(db, req, filePath, callback) {
-//     // saves to USER (for Profile images)
-//     var collection = db.collection('users');
-//
-//     var uId = ObjectId(req.session.passport.user)
-//     collection.findOneAndUpdate({"_id": uId}, {
-//       $set: {
-//         profileImg: filePath
-//       }
-//     }, {
-//       sort: {_id: -1},
-//       upsert: false
-//     }, (err, result) => {
-//       if (err) return res.send(err)
-//       callback(result)
-//     })
-//     // collection.findOne({"_id": uId}, (err, result) => {
-//     //     //{'imagePath' : filePath }
-//     //     //assert.equal(err, null);
-//     //     callback(result);
-//     // });
-// }
 //---------------------------------------
 // IMAGE CODE END
 //---------------------------------------

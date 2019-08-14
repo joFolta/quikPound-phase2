@@ -11,26 +11,39 @@
 <body>
   <div class="container">
 
+    <div class="page-header text-center">
+      <h1><span class="fa fa-anchor"></span> Profile Page</h1>
+      <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+    </div>
 
-<!-- added "/" to CSS, JS LINKS/SCRIPTS -->
-<!-- better syntax -->
-<!-- NOW IMAGE LOADS on POSTS.EJS -->
+    <div class="row">
 
+      <!-- LOCAL INFORMATION -->
+      <div class="col-sm-6">
+        <div class="well">
+          <h3><span class="fa fa-user"></span> <%= user %></h3>
+        </div>
+      </div>
+
+
+    </div>
     <div class="row">
       <div class="col-sm-6">
         <ul>
           <% for(var i=0; i<posts.length; i++) {%>
           <li class="message">
-            <img class="postPageImg" src="/<%= posts[i].postImg %>" alt="posted image">
-              <a href="/u/<%= posts[i].username %>"><span><%= posts[i].username %></span></a>
+            <a href="/posts/<%= posts[i]._id %>">
+              <img class="profileThumb" src="/<%= posts[i].postImg %>" alt="posted image">
+              <span><%= posts[i]._id %></span>
+              <span><%= posts[i].username %></span>
               <span><%= posts[i].postText %></span>
+            </a>
           </li>
           <% } %>
         </ul>
-
       </div>
     </div>
-  </div>
+
     <script src="/main.js"></script>
 
 </body>
